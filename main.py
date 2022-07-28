@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.cm as cm
 import cv2
 
-model = tf.keras.models.load_model("mnist.h5")
+model = tf.keras.models.load_model("MnistModel.h5")
 
 
 
@@ -121,31 +121,5 @@ heatmap = icam.compute_heatmap(image)
 
 heatmap = cv2.resize(heatmap, (img_size, img_size))
 
-def save_and_display_gradcam(img_path, heatmap, cam_path, alpha=0.5):
-    # Load the original image
-    img = keras.preprocessing.image.load_img(img_path)
-    img = keras.preprocessing.image.img_to_array(img)
 
-    # Rescale heatmap to a range 0-255
-    heatmap = np.uint8(255 * heatmap)
-
-    # Use jet colormap to colorize heatmap
-    jet = cm.get_cmap("jet")
-
-    # Use RGB values of the colormap
-    jet_colors = jet(np.arange(256))[:, :3]
-    jet_heatmap = jet_colors[heatmap]
-
-    # Create an image with RGB colorized heatmap
-    jet_heatmap = keras.preprocessing.image.array_to_img(jet_heatmap)
-    jet_heatmap = jet_heatmap.resize((img.shape[1], img.shape[0]))
-    jet_heatmap = keras.preprocessing.image.img_to_array(jet_heatmap)
-
-    # Superimpose the heatmap on original image
-    superimposed_img = jet_heatmap * alpha + img
-    superimposed_img = keras.preprocessing.image.array_to_img(superimposed_img)
-
-    # Save the superimposed image
-    superimposed_img.save(cam_path)
-
-save_and_display_gradcam(img_path, heatmap, cam_path)
+icam.save_and_display_gradcam(img_path, heatmap, cam_path)
